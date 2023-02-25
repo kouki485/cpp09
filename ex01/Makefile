@@ -7,12 +7,12 @@ OBJS		= $(SRCS:%.c=%.o)
 
 CXX			= c++
 
-CFLAGS	= -Wall -Wextra -Werror -std=c++98
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -pedantic
 
 all		: $(NAME)
 
 $(NAME)	: $(SRCS)
-		$(CXX) $(CFLAGS) -o $@ $^
+		$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean	:
 
@@ -22,8 +22,7 @@ fclean	: clean
 re : fclean all
 
 test :
-	./RPN "89 * 9 - 9 - 9 - 4 - 1 +"
-	./RPN "77 * 7 -"
-	./RPN "(1 + 1)"
-
-.PHONY : all clean fclean re
+	./$(NAME) "89 * 9 - 9 - 9 - 4 - 1 +"
+	./$(NAME) "77 * 7 -"
+	./$(NAME) "(1 + 1)"
+.PHONY : all clean fclean re test

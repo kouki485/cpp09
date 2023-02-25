@@ -1,16 +1,14 @@
 #include "RPN.hpp"
 
-int is_operator(char c)
+static bool is_operator(char c)
 {
-	if(c == '+' || c == '-' ||c == '*' ||c == '/')
-		return 1;
-	return 0;
+	return(c == '+' || c == '-' ||c == '*' ||c == '/');
 }
 
 void error()
 {
 	std::cerr << "Error\n";
-	exit(1);
+	exit(0);//make fileの都合
 }
 
 void parse(char **argv)
@@ -19,13 +17,25 @@ void parse(char **argv)
 
 	size_t i = 0;
 	size_t flag = 0;
+	size_t count = 0;
+	size_t num_count = 0;
 
+	if(is_operator(argv[1][0]))
+		error();
+	for(size_t a = 0;argv[1][a];a++)
+		if(is_operator(argv[1][a]))
+			count++;
+	if(strlen(argv[1]) == count)
+		error();
+	
 	while(argv[1][i])
 	{
 		if(isspace(argv[1][i]))
+		{
 			i++;
-		if(!isascii(argv[1][i]))
-			return ;
+			if((strlen(argv[1]) - 1) == --i)
+				break ;
+		}
 		else if(argv[1][i] == '+' && st.size() != 1)
 		{
 			int k = st.top();
@@ -68,13 +78,25 @@ void parse(char **argv)
 		{
 			int d = argv[1][i] - '0';
 			if(0 <= d && d <= 9)
+			{
+				size_t tmp = i;
+				if(argv[1][++tmp] == '\0')
+					error();
+				while (isspace(argv[1][tmp]))
+				{
+					if (argv[1][tmp + 1] == '\0')
+						error();
+					tmp++;
+				}
 				st.push(d);
+				num_count++;
+			}
 			else
 				error();
 		}
 		i++;
 	}
-	if(flag == 0)
+	if(!flag || flag != (num_count - 1))
 		error();
 	while(st.size())
 	{
