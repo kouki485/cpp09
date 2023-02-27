@@ -6,7 +6,6 @@
 #include <string>
 #include <ctype.h>
 #include <stdlib.h>
-#include <iterator>
 
 void error();
 void parse(char **argv);

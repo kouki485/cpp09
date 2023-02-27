@@ -62,9 +62,9 @@ void parse(char **argv)
 		{	
 			long m = st.top();
 			st.pop();
-			if(INT_MAX / m < st.top() || INT_MIN / m > st.top())
-				error();
 			m *= st.top();
+			if(m > INT_MAX || m < INT_MIN)
+				error();
 			st.pop();
 			st.push(m);
 			flag++;
