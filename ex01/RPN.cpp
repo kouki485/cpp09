@@ -13,7 +13,7 @@ void error()
 
 void parse(char **argv)
 {
-	std::stack<int> st;
+	std::stack<long> st;
 
 	size_t i = 0;
 	size_t flag = 0;
@@ -38,26 +38,32 @@ void parse(char **argv)
 		}
 		else if(argv[1][i] == '+' && st.size() != 1)
 		{
-			int k = st.top();
+			long k = st.top();
 			st.pop();
 			k += st.top();
+			if(k > INT_MAX || k < INT_MIN)
+				error();
 			st.pop();
 			st.push(k);
 			flag++;
 		}
 		else if(argv[1][i] == '-' && st.size() != 1)
 		{
-			int l = st.top();
+			long l = st.top();
 			st.pop();
 			l = st.top() - l;
+			if(l > INT_MAX || l < INT_MIN)
+				error();
 			st.pop();
 			st.push(l);
 			flag++;
 		}
 		else if(argv[1][i] == '*' && st.size() != 1)
 		{	
-			int m = st.top();
+			long m = st.top();
 			st.pop();
+			if(INT_MAX / m < st.top() || INT_MIN / m > st.top())
+				error();
 			m *= st.top();
 			st.pop();
 			st.push(m);
@@ -65,12 +71,14 @@ void parse(char **argv)
 		}
 		else if(argv[1][i] == '/' && st.size() != 1)
 		{
-			int n = st.top();
-			st.pop();
-			n = st.top() / n;
+			long n = st.top();
 			st.pop();
 			if(n == 0)
 				error();
+			n = st.top() / n;
+			if(n == 0)
+				error();
+			st.pop();
 			st.push(n);
 			flag++;
 		}
