@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <list>
 #include <iterator>
 #include <time.h>
 #include <iomanip>
