@@ -7,7 +7,7 @@ OBJS		= $(SRCS:%.c=%.o)
 
 CXX			= c++
 
-CXXFLAGS	= -Wall -Wextra -Werror -std=c++98 -pedantic
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 
 all		: $(NAME)
 

@@ -5,6 +5,64 @@ void error()
 	exit(0);//make fileの都合
 }
 
+void insertion_sort(std::list<size_t>& l)
+{
+	std::list<size_t>::iterator i, j, temp;
+	for (i = ++l.begin(); i != l.end(); ++i)
+	{
+		temp = i;
+		for (j = i; j != l.begin(); --j)
+		{
+			if (*temp > *(--j))
+			{
+				++j;
+				break;
+			}
+			++j;
+		}
+		l.insert(j, *temp);
+		l.erase(temp);
+	}
+}
+
+void merge(std::vector<size_t>& v, size_t left, size_t mid, size_t right)
+{
+
+	std::vector<size_t> temp(right - left + 1);
+
+	size_t i = left;
+	size_t j = mid + 1;
+	size_t k = 0;
+
+	while (i <= mid && j <= right)
+	{
+		if (v[i] < v[j])
+			temp[k++] = v[i++];
+		else
+			temp[k++] = v[j++];
+	}
+
+	while (i <= mid)
+		temp[k++] = v[i++];
+
+	while (j <= right)
+		temp[k++] = v[j++];
+	std::copy(temp.begin(), temp.end(), v.begin() + left);
+}
+
+void merge_sort(std::vector<size_t>& v, size_t left, size_t right)
+{
+
+	if (left >= right) {	return;}
+
+	size_t mid = (left + right) / 2;
+
+	merge_sort(v, left, mid);
+	merge_sort(v, mid + 1, right);
+
+	merge(v, left, mid, right);
+}
+
 size_t tokenize(std::string const &str, const char* delim,
 		std::vector<std::string> &out)
 {
@@ -19,13 +77,12 @@ size_t tokenize(std::string const &str, const char* delim,
 	return i;
 }
 
-#include <algorithm>
 void my_sort(int argc,std::vector<size_t> vec,std::list<size_t> list,size_t j,bool flag2)
 {
 	size_t s = 0;
 	std::cout << "After:\t";
 	double start = calcTime();
-	std::sort(vec.begin(),vec.end());
+	merge_sort(vec,0,vec.size() - 1);
 	double end = calcTime();
 
 	std::vector<size_t>::iterator it;
@@ -40,7 +97,7 @@ void my_sort(int argc,std::vector<size_t> vec,std::list<size_t> list,size_t j,bo
 			<< end - start << " us.\n";
 
 	double start1 = calcTime();
-	list.sort();
+	insertion_sort(list);
 	double end1 = calcTime();
 	std::cout << std::setprecision(5) << "Time to process a range of "<< s << " elements with std::list   : " \
 			<< end1 - start1 << " us.\n";
