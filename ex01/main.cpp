@@ -14,5 +14,5 @@ int main(int argc,char **argv)
 {
 	if(argc != 2 || !strlen(argv[1]))
 		error();
-		parse(argv);	
+		parse(argv);
 }

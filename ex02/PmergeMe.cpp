@@ -68,10 +68,10 @@ size_t tokenize(std::string const &str, const char* delim,
 {
 	char *token = strtok(const_cast<char*>(str.c_str()), delim);
 	size_t i = 0;
- 	while (token != nullptr)
+ 	while (token != NULL)
 	{
 		out.push_back(std::string(token));
-		token = strtok(nullptr, delim);
+		token = strtok(NULL, delim);
 		i++;
 	}
 	return i;

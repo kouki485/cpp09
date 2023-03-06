@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <string.h>
+#include <stdlib.h>
 
 void func(char **argv);
 #include <deque>
@@ -24,4 +27,5 @@ class BitData
 		~BitData();
 };
 
+std::deque<std::string> split(const std::string& str, char delimiter);
 #endif

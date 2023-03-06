@@ -18,6 +18,20 @@ BitData &BitData::operator=(const BitData &rhs)
 	return *this;
 }
 
+std::deque<std::string> split(const std::string& str, char delimiter)
+{
+	std::deque<std::string> tokens;
+	std::istringstream iss(str);
+	std::string token;
+	while (std::getline(iss, token, delimiter))
+		tokens.push_back(token);
+	return tokens;
+}
+
+// void parse(std::string s)
+// {
+	
+// }
 // void func(char **argv)
 // {
 
