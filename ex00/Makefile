@@ -1,6 +1,7 @@
 NAME	= btc
 
 SRCS	= main.cpp\
+			BitcoinExchange.cpp\
 
 OBJS		= $(SRCS:%.c=%.o)
 
@@ -20,8 +21,4 @@ fclean	: clean
 
 re : fclean all
 
-test :
-	./$(NAME) "89 * 9 - 9 - 9 - 4 - 1 +"
-	./$(NAME) "77 * 7 -"
-	./$(NAME) "(1 + 1)"
-.PHONY : all clean fclean re test
+.PHONY : all clean fclean re

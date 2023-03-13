@@ -17,4 +17,8 @@
 #define ERROR 1
 #define SUCCESS 0
 
+bool validateArgs(int argc);
+bool validateFirstLine(std::ifstream &input_file);
+bool splitLine(std::string input_file_line);
+
 #endif
