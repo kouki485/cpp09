@@ -1,7 +1,7 @@
 NAME	= btc
 
 SRCS	= main.cpp\
-			BitcoinExchange.cpp
+
 OBJS		= $(SRCS:%.c=%.o)
 
 CXX			= c++

@@ -13,10 +13,10 @@ void error()
 
 void parse(char **argv)
 {
-	std::stack<long> st;
+	std::stack<long long> st;
 
 	size_t i = 0;
-	size_t flag = 0;
+	size_t operator_count = 0;
 	size_t count = 0;
 	size_t num_count = 0;
 
@@ -32,55 +32,54 @@ void parse(char **argv)
 	{
 		if(isspace(argv[1][i]))
 		{
+			// 最後の文字に達したらbreak
 			i++;
 			if((strlen(argv[1]) - 1) == --i)
 				break ;
 		}
-		else if(argv[1][i] == '+' && st.size() != 1)
+		else if(argv[1][i] == '+' && st.size() >= 2)
 		{
-			long k = st.top();
+			long long k = st.top();
 			st.pop();
 			k += st.top();
 			if(k > INT_MAX || k < INT_MIN)
 				error();
 			st.pop();
 			st.push(k);
-			flag++;
+			operator_count++;
 		}
-		else if(argv[1][i] == '-' && st.size() != 1)
+		else if(argv[1][i] == '-' && st.size() >= 2)
 		{
-			long l = st.top();
+			long long l = st.top();
 			st.pop();
 			l = st.top() - l;
 			if(l > INT_MAX || l < INT_MIN)
 				error();
 			st.pop();
 			st.push(l);
-			flag++;
+			operator_count++;
 		}
-		else if(argv[1][i] == '*' && st.size() != 1)
+		else if(argv[1][i] == '*' && st.size() >= 2)
 		{	
-			long m = st.top();
+			long long m = st.top();
 			st.pop();
 			m *= st.top();
 			if(m > INT_MAX || m < INT_MIN)
 				error();
 			st.pop();
 			st.push(m);
-			flag++;
+			operator_count++;
 		}
-		else if(argv[1][i] == '/' && st.size() != 1)
+		else if(argv[1][i] == '/' && st.size() >= 2)
 		{
-			long n = st.top();
+			long long n = st.top();
 			st.pop();
 			if(n == 0)
 				error();
 			n = st.top() / n;
-			if(n == 0)
-				error();
 			st.pop();
 			st.push(n);
-			flag++;
+			operator_count++;
 		}
 		else
 		{
@@ -104,7 +103,7 @@ void parse(char **argv)
 		}
 		i++;
 	}
-	if(!flag || flag != (num_count - 1))
+	if(!operator_count || operator_count != (num_count - 1))
 		error();
 	while(st.size())
 	{

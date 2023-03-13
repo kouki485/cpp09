@@ -1,31 +1,20 @@
 #ifndef BITCOINEXCHANGE_CPP
 #define BITCOINEXCHANGE_CPP
 
+#include <map>
 #include <iostream>
-#include <string>
 #include <fstream>
 #include <sstream>
 #include <string.h>
+#include <deque>
 #include <stdlib.h>
 
-void func(char **argv);
-#include <deque>
+#define MAX_YEAR 2023
+#define MIN_YEAR 2008
+#define MAX_MONTH 12
+#define MIN_MONTH 1
+#define MIN_DAY 1
+#define ERROR 1
+#define SUCCESS 0
 
-class BitData
-{
-	private:
-		size_t date;
-		size_t value;
-	public:
-		void set_date(size_t date);
-		void set_value(size_t value);
-		size_t get_date() const;
-		size_t get_value() const;
-		BitData(size_t date,size_t value);
-		BitData &operator=(const BitData &rhs);
-		BitData(BitData const &c);
-		~BitData();
-};
-
-std::deque<std::string> split(const std::string& str, char delimiter);
 #endif

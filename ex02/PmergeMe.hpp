@@ -8,7 +8,6 @@
 #include <iterator>
 #include <time.h>
 #include <iomanip>
-#include <string.h>
 
 void error();
 void func(int argc,char **argv);

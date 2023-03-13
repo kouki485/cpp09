@@ -1,80 +1,188 @@
 #include "BitcoinExchange.hpp"
 
-size_t count_pipe(std::string s)
+
+std::string trim(const std::string& string, const char* trimCharacterList = " \t\v\r\n")
 {
-	size_t i = 0;
-	size_t n = 0;
-	for(;s[i];i++)
-		if(s[i] == '|')
-			n++;
-	return n;
+
+	std::string result;
+	std::string::size_type left = string.find_first_not_of(trimCharacterList);
+	if (left != std::string::npos)
+	{
+		std::string::size_type right = string.find_last_not_of(trimCharacterList);
+		result = string.substr(left, right - left + 1);
+	}
+	return (result);
 }
 
-size_t tokenize(std::string const &str, const char* delim,
-		std::deque<std::string> &out)
+int calcMaxDay(int i_year,int i_month)
 {
-	char *token = strtok(const_cast<char*>(str.c_str()), delim);
-	size_t i = 0;
- 	while (token != NULL)
+	if (i_year % 4 == 0)//うるう年
 	{
-		out.push_back(std::string(token));
-		token = strtok(NULL, delim);
+		if (i_month == 2)
+		{
+			return (29);
+		}
+	}else
+	{
+		if ((i_month <= 7 && i_month % 2 == 1) ||(i_month >= 8 && i_month % 2 == 0))//３０か３１かを判定
+			return (31);
+		else if (i_month == 2)
+			return (28);
+		else
+			return (30);
+	}
+	return (0);
+}
+
+size_t xStrlen(char *str)
+{
+	if(!str)
+		return (0);
+	size_t i = 0;
+	while (str[i])
 		i++;
-	}
-	return i;
+	return (i);
 }
 
-int main(int argc,char **argv)
+bool	validateDate(std::string s_date, int &i_year,int &i_month,int &i_day)
 {
-	BitData v(2008,1);
-	if(argc == 1)
-	{
-		std::cerr << "Error: could not open file.\n";
-		return 0;
-	}
-	if(argc != 2)
-	{
-		std::cerr << "Error\n";
-		return 0;
-	}
-	//func(&argv[1]);
-	std::ifstream file(argv[1]);
-	std::string s;
-	std::deque<std::string> tmp,tmp2;
-	size_t i = 0;
-	while(getline(file,s))
-	{
-		tmp.push_back(s);
-		i++;//行数
-	}
-	tmp2 = tmp;
-	size_t k = 0;
-	std::deque<std::string> value;
-	// std::cout << l << std::endl;
-
-	long l = 0;
-
-	while(k < i)
-	{
-		if(count_pipe(tmp[k]) != 1)
-		{
-			std::cerr << "Error: bad input => " << tmp[k] << std::endl;
-			k++;
-		}
-		tokenize(tmp2[k],"|",value);
-		std::cout << tmp[k] << std::endl;
-		k++;
-	}
+	char 	*c_p_year;
+	char 	*c_p_month;
+	char 	*c_p_day;
 	
-		for(size_t i = 0;value[i].c_str();i++)
+
+	c_p_year = strtok(const_cast<char*>(s_date.c_str()), "-");
+
+	if (c_p_year == NULL)
+		return (ERROR);
+	c_p_year = (char *)trim(c_p_year).c_str();
+
+	if (xStrlen(c_p_year) != 4 || atoi(c_p_year) > MAX_YEAR || atoi(c_p_year) < MIN_YEAR )
+		return (ERROR);
+	else
+		i_year = atoi(c_p_year);
+
+	c_p_month = strtok(NULL, "-");
+	if (c_p_month == NULL)
+		return (ERROR);
+	c_p_month = (char *)trim(c_p_month).c_str();
+	if (xStrlen(c_p_month) != 2 || atoi(c_p_month) > MAX_MONTH || atoi(c_p_month) < MIN_MONTH)
+		return (ERROR);
+	else
+		i_month = atoi(c_p_month);
+	c_p_day = strtok(NULL, "-");
+	if (c_p_day == NULL)
+		return (ERROR);
+	c_p_day = (char *)trim(c_p_day).c_str();
+	if (xStrlen(c_p_day) != 2 || atoi(c_p_day) > calcMaxDay(i_year, i_month) || atoi(c_p_day) < MIN_DAY)
+		return (ERROR);
+	else
+		i_day = atoi(c_p_day);
+	return (SUCCESS);
+}
+
+
+bool splitLine(std::string input_file_line)
+{
+	std::string s_date;
+	float 		f_value;
+	char		*date_char_array;
+	char		*value_char_array;
+	float		f_mult_res;
+	int			i_year;
+	int			i_month;
+	int			i_day;
+
+	date_char_array = strtok(const_cast<char*>(input_file_line.c_str()), "|");
+	value_char_array = strtok(NULL, "|");
+	s_date = std::string(date_char_array);
+	if (validateDate(s_date, i_year, i_month, i_day))
+	{
+		std::cout  << "Error: bad input => " << s_date << std::endl;
+		return (ERROR);
+	}
+	date_char_array = strtok(const_cast<char*>(input_file_line.c_str()), "|");
+	if (value_char_array == NULL)
+	{
+		std::cout  << "Error: bad input => " << s_date << std::endl;
+		return (ERROR);
+	}
+	else
+	{
+		f_value = atof(value_char_array);
+		if (f_value == 0)
 		{
-			l = atol(value[i].c_str());
-			std::cout << l << std::endl;
-			// if(l == 0 && i > 1)
-			// 	std::cerr << "Error: not a number." << std::endl;
-
+			std::cout << "Error: value is not a float or a positive integer between 0 and 1000. " << std::endl;
+			return (ERROR);
 		}
+		else if ( f_value < 0)
+		{
+			std::cout << "Error: not a positive number. " << std::endl;
+			return (ERROR);
+		}
+		else if (f_value > 1000)
+		{
+			std::cout << "Error: too large a number." << std::endl;
+			return (ERROR);
+		}
+		else if (strtok(NULL, "|") != NULL)
+		{
+			std::cout << "Error: there are more than one pipe." << std::endl;
+			return (ERROR);
+		}
+	}
+	f_mult_res = f_value * 3;//3はcsvファイルで検索した日時のレートの代わりに書いています。
+	std::cout << i_year << "-" << i_month << "-" << i_day << " => " << f_value << " = " << f_mult_res << std::endl;
+	return (SUCCESS);
+}
 
-	file.close();
-	return 0;
+bool validateArgs(int argc)
+{
+	if (argc == 1)
+	{
+		std::cout << "Error: need input.txt file\n";
+		return (ERROR);
+	}
+	if (argc != 2)
+	{
+		std::cout <<"Error: num of arguments is invalid\n";
+		return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+
+bool	validateFirstLine(std::ifstream &input_file)
+{
+	std::string s_input_file_line;
+
+	std::getline(input_file, s_input_file_line, '\n');
+	if (strcmp(s_input_file_line.c_str(), "date | value") != 0)
+	{
+		std::cout << "Error: file's first line is not 'date | value'." << std::endl;
+		return (ERROR);
+	}
+	return (SUCCESS);
+}
+
+int main(int argc, char **argv)
+{
+	std::map<std::string, int> map_bit_coin_csv;
+	std::string				   s_input_file_line;
+
+	if (validateArgs(argc))
+		return (-1);
+	std::ifstream input_file(argv[1]);
+	if (!input_file)
+	{
+		std::cout << "Error: cannot open to file." << std::endl;
+		return (-1);
+	}
+	if (validateFirstLine(input_file))
+		return (-1);
+	while (std::getline(input_file, s_input_file_line, '\n'))
+	{
+		splitLine(s_input_file_line);
+	}
+
 }
