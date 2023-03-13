@@ -2,24 +2,32 @@
 
 int main(int argc, char **argv)
 {
-	Map csv_map;
-	std::string				   s_input_file_line;
+	Map 		csv_map;
+	std::string	s_input_file_line;
 
-	readCsv(csv_map);
-	if (validateArgs(argc))
-		return (-1);
-	std::ifstream input_file(argv[1]);
-	if (!input_file)
+	try
 	{
-		std::cout << "Error: could not open file." << std::endl;
-		return (-1);
+		readCsv(csv_map);
+		if (validateArgs(argc))
+			return (0);
+		std::ifstream input_file(argv[1]);
+		if (!input_file)
+		{
+			std::cout << "Error: could not open file." << std::endl;
+			return (0);
+		}
+		if (validateFirstLine(input_file))
+			return (0);
+		while (std::getline(input_file, s_input_file_line, '\n'))
+		{
+			splitLine(s_input_file_line,csv_map);
+		}
 	}
-	if (validateFirstLine(input_file))
-		return (-1);
-	while (std::getline(input_file, s_input_file_line, '\n'))
+	catch(const std::exception& e)
 	{
-		splitLine(s_input_file_line,csv_map);
+		std::cerr << e.what() << '\n';
 	}
+	
 	return (0);
 
 }

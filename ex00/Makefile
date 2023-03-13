@@ -22,4 +22,7 @@ fclean	: clean
 
 re : fclean all
 
+test :
+	./$(NAME) 
+	./$(NAME) input.txt
 .PHONY : all clean fclean re
