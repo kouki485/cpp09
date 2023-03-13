@@ -119,6 +119,11 @@ bool splitLine(std::string input_file_line,Map &map)
 		return (ERROR);
 	}
 	date_char_array = strtok(const_cast<char*>(input_file_line.c_str()), "|");
+	if (!date_char_array)
+	{
+		std::cout << "Error: empty line."<< std::endl;
+		return (ERROR);
+	}
 	value_char_array = strtok(NULL, "|");
 	s_date = std::string(date_char_array);
 	if (validateDate(s_date, i_year, i_month, i_day))
@@ -126,6 +131,7 @@ bool splitLine(std::string input_file_line,Map &map)
 		std::cout << "Error: bad input => " << s_date << std::endl;
 		return (ERROR);
 	}
+
 	date_char_array = strtok(const_cast<char*>(input_file_line.c_str()), "|");
 	if (value_char_array == NULL)
 	{
@@ -157,6 +163,7 @@ bool splitLine(std::string input_file_line,Map &map)
 			return (ERROR);
 		}
 	}
+
 	its = map.data.find(trim(s_date));
 	if(its != map.data.end())
 		f_mult_res = f_value * atof(its->second.c_str());
@@ -170,6 +177,7 @@ bool splitLine(std::string input_file_line,Map &map)
 	if(1 <= i_day && i_day <= 9)
 		with_zero_day = "0";
 	std::cout << i_year << "-" << with_zero_month << i_month << "-" << with_zero_day << i_day << " => " << f_value << " = " << f_mult_res << std::endl;
+
 	return (SUCCESS);
 }
 
