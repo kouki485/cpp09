@@ -1,5 +1,4 @@
 #include "BitcoinExchange.hpp"
-	// std::cout << __LINE__ << std::endl;
 
 std::string trim(const std::string& string, const char* trimCharacterList = " \t\v\r\n")
 {
@@ -100,7 +99,7 @@ size_t countPipe(std::string input_file_line)
 	return (pipe_num);
 }
 
-bool splitLine(std::string input_file_line)
+bool splitLine(std::string input_file_line,Map &map)
 {
 	std::string s_date;
 	float 		f_value;
@@ -112,6 +111,7 @@ bool splitLine(std::string input_file_line)
 	int			i_day;
 	std::string with_zero_month = "";
 	std::string with_zero_day = "";
+	std::map<std::string,std::string>::iterator its;
 
 	if(countPipe(input_file_line) > 1)
 	{
@@ -156,13 +156,15 @@ bool splitLine(std::string input_file_line)
 			std::cout << "Error: too large a number." << std::endl;
 			return (ERROR);
 		}
-		else if (strtok(NULL, "|") != NULL)
-		{
-			std::cout << "Error: there are more than one pipe." << std::endl;
-			return (ERROR);
-		}
 	}
-	f_mult_res = f_value * 0.3;//3はcsvファイルで検索した日時のレートの代わりに書いています。
+	its = map.data.find(trim(s_date));
+	if(its != map.data.end())
+		f_mult_res = f_value * atof(its->second.c_str());
+	else
+	{
+		std::cout << "Error: not found data in csv." << std::endl;
+			return (ERROR);
+	}
 	if(1 <= i_month && i_month <= 9)
 		with_zero_month = "0";
 	if(1 <= i_day && i_day <= 9)
@@ -175,7 +177,7 @@ bool validateArgs(int argc)
 {
 	if (argc == 1)
 	{
-		std::cout << "Error: need input.txt file\n";
+		std::cout << "Error: could not open file.\n";
 		return (ERROR);
 	}
 	if (argc != 2)

@@ -2,6 +2,7 @@ NAME	= btc
 
 SRCS	= main.cpp\
 			BitcoinExchange.cpp\
+			ReadCsv.cpp\
 
 OBJS		= $(SRCS:%.c=%.o)
 
